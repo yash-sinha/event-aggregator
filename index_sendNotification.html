@@ -16,9 +16,7 @@
     // for FB.getLoginStatus().
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
-       userLikes();
-       getUserLocation();
-       sendNotification();
+      testAPI();
     } else if (response.status === 'not_authorized') {
       // The person is logged into Facebook, but not your app.
       document.getElementById('status').innerHTML = 'Please log ' +
@@ -90,71 +88,96 @@
           "name" : response.data[i].name,
          });
         }
+       // for(var i in response.data) {    
+       //  var item = response.data[i];   
+       //  pageLikes.pages.push({ 
+       //    "name" : response.data[i].name,
+       //  });
       }  
-      else{
-        callback_likes();
-      }
-      // console.log(pageLikes.pages);
+      console.log(pageLikes.pages);
       // return pageLikes.pages;
     }
   
-    function callback_likes(){
-      console.log(pageLikes.pages);
-    }
-    function callback_location(locationResponse){
-      console.log(locationResponse.location.latitude);
-      console.log(locationResponse.location.longitude);
-    }
-
-  function getUserLocation(){
-    FB.api('/me?fields=location', function(response) {
-    var location =response.location;
-    FB.api('/' + location.id, {
-            fields: 'location'
-        }, function(locationResponse) {
-             locationResponse;
-             callback_location(locationResponse);//will print your desired location object
-        });
-  });
-  }
-
+  // var items = [];
+  // function getLikes(response){
+  //   for (var i = 0; i < response.data.length; i++) {
+  //           //add all posts to the items array
+  //           items.push(response.data[i]);
+  //       }
+  //   if (response.paging && response.paging.next) {
+  //           //call function recursively until there is no "next"
+  //           getLikes(response.paging.next);
+  //       } else {
+  //           //this is when it´s done
+  //           console.log(items);
+  //       }
+  // }
+   // if (response.paging.next != "undefined"){
+   //     FB.api(response.paging.next, getLikes);
+   //     for(var i in response.data) {    
+   //      var item = response.data[i];   
+   //      pageLikes.pages.push({ 
+   //        "name" : response.data[i].name,
+   //      });
+   //    }  
+   //    console.log(pageLikes.pages);
+   //  }
+// var items = [];
+// function apiCall(next) {
+//     FB.api(next, function (response) {
+//         for (var i = 0; i < response.data.length; i++) {
+//             //add all posts to the items array
+//             items.push(response.data[i]);
+//         }
+//         if (response.paging && response.paging.next) {
+//             //call function recursively until there is no "next"
+//             apiCall(response.paging.next);
+//         } else {
+//             //this is when it´s done
+//             console.log(items);
+//         }
+//     });
+// }
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
-  function userLikes(callback_likes) {
+  function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
     FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
       document.getElementById('status').innerHTML =
         'Thanks for logging in, ' + response.name + '!';
-      id= response.id;
     });
-
-  
-  FB.api("me/likes?limit=100", getLikes);
-}
-  function sendNotification(){
-    FB.api('/me', function(response) {
-    var req ="/"+response.id+"/notifications";
-    FB.api(req, 
-       'post', 
-       {
-           access_token: '196088520840276|386c8788409a61481d3c64676da2ddf8',
-           template: 'You have 9 events waiting to be reviewed',
-           href: 'google.com'        
-       }, 
-       function(response)
-       {
-          if (!response || response.error)
-          {
-             alert(response.error.message);
-          } 
-          else 
-          {
-             alert('Success :D');
-          }
-       }
-    );
+    /* make the API call */
+  // FB.api(
+  //   "/me/likes?limit=5000",
+  //   function (response) {
+  //     if (response && !response.error) {
+  //       /* handle the result */
+  //     }
+  //     console.log(response);
+  //   });
+  // FB.api("me/likes?limit=100", getLikes);
+  // FB.api('/me', function(response){
+  //   var location= response.location.name;
+  //   console.log(location);
+  // });
+   FB.api("me/likes?limit=100", getLikes);
+  console.log(pageLikes.pages);
+  FB.api('/me?fields=id,first_name,last_name,gender,location,hometown,email', function(response) {
+    var location =response.location;
+    FB.api('/' + location.id, {
+            fields: 'location'
+        }, function(locationResponse) {
+            console.log(locationResponse); //will print your desired location object
+        });
   });
+  // var result = FB.api('/me?fields=city');
+  
+  // console.log(result);
+  //   // /* make the API call */
+    // FB.api('/me', {fields: 'gender, first_name, last_name, email, likes'}, function(response) {
+    // console.log(response.likes[0]);
+    // });
   }
 </script>
 
