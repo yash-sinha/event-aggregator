@@ -74,23 +74,70 @@
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
+
   var pageLikes = {
     pages: []
   };
 
   function getLikes(response){
-   if (response.paging.next != "undefined"){
+   if (response.paging && response.paging.next){
        FB.api(response.paging.next, getLikes);
-       for(var i in response.data) {    
-        var item = response.data[i];   
-        pageLikes.pages.push({ 
+       for (var i = 0; i < response.data.length; i++) {
+            //add all posts to the items array
+            pageLikes.pages.push({ 
           "name" : response.data[i].name,
-        });
+         });
+        }
+       // for(var i in response.data) {    
+       //  var item = response.data[i];   
+       //  pageLikes.pages.push({ 
+       //    "name" : response.data[i].name,
+       //  });
       }  
+      console.log(pageLikes.pages);
+      // return pageLikes.pages;
     }
-    console.log(pageLikes.pages);
-  }
-
+  
+  // var items = [];
+  // function getLikes(response){
+  //   for (var i = 0; i < response.data.length; i++) {
+  //           //add all posts to the items array
+  //           items.push(response.data[i]);
+  //       }
+  //   if (response.paging && response.paging.next) {
+  //           //call function recursively until there is no "next"
+  //           getLikes(response.paging.next);
+  //       } else {
+  //           //this is when it´s done
+  //           console.log(items);
+  //       }
+  // }
+   // if (response.paging.next != "undefined"){
+   //     FB.api(response.paging.next, getLikes);
+   //     for(var i in response.data) {    
+   //      var item = response.data[i];   
+   //      pageLikes.pages.push({ 
+   //        "name" : response.data[i].name,
+   //      });
+   //    }  
+   //    console.log(pageLikes.pages);
+   //  }
+// var items = [];
+// function apiCall(next) {
+//     FB.api(next, function (response) {
+//         for (var i = 0; i < response.data.length; i++) {
+//             //add all posts to the items array
+//             items.push(response.data[i]);
+//         }
+//         if (response.paging && response.paging.next) {
+//             //call function recursively until there is no "next"
+//             apiCall(response.paging.next);
+//         } else {
+//             //this is when it´s done
+//             console.log(items);
+//         }
+//     });
+// }
   // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
   function testAPI() {
@@ -101,16 +148,33 @@
         'Thanks for logging in, ' + response.name + '!';
     });
     /* make the API call */
-    FB.api("me/likes?limit=100", getLikes);
   // FB.api(
-  //   "/me/likes?limit=100",
+  //   "/me/likes?limit=5000",
   //   function (response) {
   //     if (response && !response.error) {
   //       /* handle the result */
   //     }
   //     console.log(response);
   //   });
-    // /* make the API call */
+  // FB.api("me/likes?limit=100", getLikes);
+  // FB.api('/me', function(response){
+  //   var location= response.location.name;
+  //   console.log(location);
+  // });
+   FB.api("me/likes?limit=100", getLikes);
+  console.log(pageLikes.pages);
+  FB.api('/me?fields=id,first_name,last_name,gender,location,hometown,email', function(response) {
+    var location =response.location;
+    FB.api('/' + location.id, {
+            fields: 'location'
+        }, function(locationResponse) {
+            console.log(locationResponse); //will print your desired location object
+        });
+  });
+  // var result = FB.api('/me?fields=city');
+  
+  // console.log(result);
+  //   // /* make the API call */
     // FB.api('/me', {fields: 'gender, first_name, last_name, email, likes'}, function(response) {
     // console.log(response.likes[0]);
     // });
